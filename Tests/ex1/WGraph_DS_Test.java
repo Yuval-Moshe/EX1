@@ -17,7 +17,7 @@ class WGraph_DS_Test {
 //            wg.addNode(n);
 //        }    }
 
-    //Test Basic Functionalities
+    // Test Basic Functionalities //
     @Test
     public void test_0() {
         weighted_graph WG = new WGraph_DS();
@@ -102,6 +102,118 @@ class WGraph_DS_Test {
 
     }
 
+    @Test
+    public void test_2() {
+        /** Test isConnected() **/
+        weighted_graph WG_1 = new WGraph_DS();
+        for (int i = 0; i < 10; i++) {
+            WG_1.addNode(i);
+        }
+
+        for (int i = 0; i < 9; i++) {
+            double rnd_weight = Math.random() * (5) + 1;
+            WG_1.connect(i, i + 1, rnd_weight);
+        }
+
+        //TEST 2.1 - Connected Graph before node removal:True, after node removal:False//
+        weighted_graph_algorithms WGA = new WGraph_Algo();
+        WGA.init(WG_1);
+        assertTrue(WGA.isConnected());
+        WGA.getGraph().removeNode(1);
+        assertFalse(WGA.isConnected());
+
+        //TEST 2.2 - Empty graph & 1 node grpah: True//
+        weighted_graph WG_2 = new WGraph_DS();
+        WGA.init(WG_2);
+        assertTrue(WGA.isConnected());
+        WGA.getGraph().addNode(0);
+        assertTrue(WGA.isConnected());
+
+
+
+    }
+
+
+    @Test
+    public void test_3() {
+        /** Test shortestPath() **/
+        //TEST 3.1 - Path 0->2->3->4, pathDist = 6.00; //
+        weighted_graph WG_1 = new WGraph_DS();
+        for (int i = 0; i < 5; i++) {
+            WG_1.addNode(i);
+        }
+
+        WG_1.connect(0, 1, 1);
+        WG_1.connect(0, 2, 2);
+        WG_1.connect(1, 2, 1);
+        WG_1.connect(1, 4, 6);
+        WG_1.connect(2, 3, 3);
+        WG_1.connect(3, 4, 1);
+        weighted_graph_algorithms WGA = new WGraph_Algo();
+        WGA.init(WG_1);
+        List<node_info> shortestPath = WGA.shortestPath(0, 4);
+        for(node_info node : shortestPath){
+            System.out.print(node.getKey()+", ");
+        }
+        System.out.println();
+        assertEquals(WGA.shortestPathDist(0,4), 6);
+
+        //TEST 3.2 - Path 0->4->2->3->10, pathDist = 6.00; //
+        weighted_graph WG_2 = new WGraph_DS();
+        for (int i = 0; i < 11; i++) {
+            WG_2.addNode(i);
+        }
+        WG_2.connect(0, 1, 5);
+        WG_2.connect(0, 4, 2);
+        WG_2.connect(0, 6, 4);
+        WG_2.connect(1, 2, 9);
+        WG_2.connect(1, 3, 7);
+        WG_2.connect(2, 3, 1);
+        WG_2.connect(2, 4, 2);
+        WG_2.connect(3, 10, 1);
+        WG_2.connect(4, 7, 4);
+        WG_2.connect(4, 9, 5);
+        WG_2.connect(5, 6, 2);
+        WG_2.connect(5, 8, 4);
+        WG_2.connect(6, 7, 7);
+        WG_2.connect(6, 10, 3);
+        WG_2.connect(7, 8, 1);
+        WG_2.connect(8, 9, 3);
+        WG_2.connect(9, 10, 6);
+        WGA.init(WG_2);
+        shortestPath = WGA.shortestPath(0, 10);
+        for(node_info node : shortestPath){
+            System.out.print(node.getKey()+", ");
+        }
+        System.out.println();
+        assertEquals(WGA.shortestPathDist(0,10), 6);
+
+        //TEST 3.3 - Path 0->6->10, pathDist = 7.00; //
+        WGA.getGraph().removeEdge(3,10);
+        shortestPath = WGA.shortestPath(0, 10);
+        for(node_info node : shortestPath){
+            System.out.print(node.getKey()+", ");
+        }
+        assertEquals(WGA.shortestPathDist(0,10), 7);
+
+        //TEST 3.4 - No Path, pathDist = -1.00//
+        WGA.getGraph().removeEdge(6,10);
+        WGA.getGraph().removeEdge(9,10);
+        shortestPath = WGA.shortestPath(0, 10);
+        assertTrue(shortestPath.isEmpty());
+        assertEquals(WGA.shortestPathDist(0,10), -1);
+
+
+        //TEST 3.5 - 1 Node Graph, pathDist = 0.00; //
+        weighted_graph WG_3 = new WGraph_DS();
+        WG_3.addNode(0);
+        WGA.init(WG_3);
+        assertEquals(WGA.shortestPathDist(0,0), 0);
+
+
+
+
+    }
 
 }
 
