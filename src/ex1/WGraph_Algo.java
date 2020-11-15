@@ -1,9 +1,10 @@
 package ex1;
+import java.io.*;
 
 
 import java.util.*;
 
-public class WGraph_Algo implements weighted_graph_algorithms {
+public class WGraph_Algo implements weighted_graph_algorithms, Serializable {
     weighted_graph _wg;
 
     public WGraph_Algo(){
@@ -134,11 +135,41 @@ public class WGraph_Algo implements weighted_graph_algorithms {
 
     @Override
     public boolean save(String file) {
-        return false;
+        boolean flag = true;
+        try{
+            FileOutputStream WGraph_file = new FileOutputStream(file);
+            ObjectOutputStream oos = new ObjectOutputStream(WGraph_file);
+            oos.writeObject(_wg);
+            oos.close();
+            WGraph_file.close();
+        }
+        catch(Exception e){
+            flag=false;
+            e.printStackTrace();
+        }
+        return flag;
+
+
     }
 
     @Override
     public boolean load(String file) {
-        return false;
+        boolean flag = true;
+        try{
+            FileInputStream WGraph_file = new FileInputStream(file);
+            ObjectInputStream ois = new ObjectInputStream(WGraph_file);
+            Object temp = ois.readObject();
+            if(temp instanceof weighted_graph){
+                _wg= (weighted_graph) temp;
+
+            }
+            ois.close();
+            WGraph_file.close();
+        }
+        catch (Exception e){
+            flag = false;
+            e.printStackTrace();
+        }
+        return flag;
     }
 }

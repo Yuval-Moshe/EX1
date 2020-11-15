@@ -21,13 +21,20 @@ class WGraph_DS_Test {
     @Test
     public void test_0() {
         weighted_graph WG = new WGraph_DS();
+        //addNode()//
         WG.addNode(0);
         WG.addNode(1);
+        //connect() two nodes by weight//
         WG.connect(0, 1, 4.3);
         assertTrue(WG.hasEdge(0, 1));
         assertEquals(WG.getEdge(0, 1), 4.3);
+        //connect() an already connected node -> should change edge weight//
+        WG.connect(0, 1, 2);
+        assertEquals(WG.getEdge(0, 1), 2);
+        //removeEdge() //
         WG.removeEdge(0, 1);
         assertFalse(WG.hasEdge(0, 1));
+        //weight of 2 unconnected nodes should be -1 //
         assertEquals(WG.getEdge(0, 1), -1);
         WG.addNode(2);
         WG.addNode(3);
@@ -57,49 +64,13 @@ class WGraph_DS_Test {
             WG.connect(i, i + 1, rnd_weight);
         }
         weighted_graph WG_Copy = new WGraph_DS(WG);
-        boolean flag =true;
-        flag &= WG.getV().containsAll(WG_Copy.getV()) ;
-        flag &= WG_Copy.getV().containsAll(WG.getV()) ;
-        assertTrue(flag);
-        for(node_info node : WG.getV()){
-            for(node_info ni : WG.getV()){
-                if(WG.hasEdge(node.getKey(), ni.getKey())){
-                    flag &= WG_Copy.hasEdge(node.getKey(), ni.getKey());
-                }
-            }
-        }
-        for(node_info node : WG_Copy.getV()){
-            for(node_info ni : WG_Copy.getV()){
-                if(WG_Copy.hasEdge(node.getKey(), ni.getKey())){
-                    flag &= WG.hasEdge(node.getKey(), ni.getKey());
-                }
-            }
-        }
-        assertTrue(flag);
+        assertTrue(isomorphic(WG, WG_Copy));
 
         // Test 2.2 - Remove 1 edge  //
         node_info curr = WG.getV().iterator().next();
         node_info node_to_remove = WG.getV(curr.getKey()).iterator().next();
         WG.removeEdge(curr.getKey(), node_to_remove.getKey());
-        flag &= WG.getV().containsAll(WG_Copy.getV()) ;
-        flag &= WG_Copy.getV().containsAll(WG.getV()) ;
-        for(node_info node : WG.getV()){
-            for(node_info ni : WG.getV()){
-                if(WG.hasEdge(node.getKey(), ni.getKey())){
-                    flag &= WG_Copy.hasEdge(node.getKey(), ni.getKey());
-                }
-            }
-        }
-        for(node_info node : WG_Copy.getV()){
-            for(node_info ni : WG_Copy.getV()){
-                if(WG_Copy.hasEdge(node.getKey(), ni.getKey())){
-                    flag &= WG.hasEdge(node.getKey(), ni.getKey());
-                }
-            }
-        }
-        assertFalse(flag);
-
-
+        assertFalse(isomorphic(WG, WG_Copy));
     }
 
     @Test
@@ -194,6 +165,7 @@ class WGraph_DS_Test {
         for(node_info node : shortestPath){
             System.out.print(node.getKey()+", ");
         }
+        System.out.println();
         assertEquals(WGA.shortestPathDist(0,10), 7);
 
         //TEST 3.4 - No Path, pathDist = -1.00//
@@ -210,9 +182,65 @@ class WGraph_DS_Test {
         WGA.init(WG_3);
         assertEquals(WGA.shortestPathDist(0,0), 0);
 
+        //TEST 3.6//
+        weighted_graph WG_4 = new WGraph_DS();
+        for(int i=1; i<901; i++){
+            WG_4.addNode(i);
+        }
+        for(int i=1; i<900; i++){
+            WG_4.connect(i,i+1,1);
+            if(i<899)
+            WG_4.connect(i,i+2,2.0001);
+
+        }
+        WGA.init(WG_4);
+        shortestPath = WGA.shortestPath(1, 900);
+        for(node_info node : shortestPath){
+            System.out.print(node.getKey()+", ");
+        }
+
+
+    }
+    @Test
+    public void test_4() {
+        /** Test save() & load() **/
+        String file_name = "TestSave";
+        weighted_graph WG_1 = new WGraph_DS();
+        for(int i=0; i<10; i++){
+            WG_1.addNode(i);
+        }
+        for(int i=0; i<9;i++){
+            WG_1.connect(i,i+1, 3);
+        }
+        weighted_graph_algorithms WGA_1 = new WGraph_Algo();
+        WGA_1.init(WG_1);
+        assertTrue(WGA_1.save("WGA_1_WGraph"));
+        weighted_graph_algorithms WGA_2 = new WGraph_Algo();
+        WGA_2.load("WGA_1_WGraph");
+        assertTrue(isomorphic(WGA_1.getGraph(), WGA_2.getGraph()));
 
 
 
+    }
+
+    public boolean isomorphic(weighted_graph WG_1, weighted_graph WG_2){
+        boolean flag = true;
+        Collection<node_info> WG1_V = WG_1.getV();
+        Collection<node_info> WG2_V = WG_2.getV();
+        for(node_info node1 : WG1_V){
+            flag &= (WG_2.getNode(node1.getKey())!=null);
+        }
+        for(node_info node2 : WG1_V){
+            flag &= (WG_1.getNode(node2.getKey())!=null);
+        }
+        for(node_info node : WG_2.getV()){
+            for(node_info ni : WG_2.getV()){
+                if(WG_2.hasEdge(node.getKey(), ni.getKey())){
+                    flag &= WG_1.hasEdge(node.getKey(), ni.getKey());
+                }
+            }
+        }
+        return flag;
     }
 
 }

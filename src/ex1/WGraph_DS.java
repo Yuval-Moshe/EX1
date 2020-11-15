@@ -1,10 +1,11 @@
 package ex1;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
-public class WGraph_DS implements weighted_graph {
+public class WGraph_DS implements weighted_graph, Serializable {
     HashMap<Integer, node_info> _vertices = new HashMap<Integer, node_info>();
     HashMap<Integer, HashMap<Integer, Double>> _weights = new HashMap<Integer, HashMap<Integer, Double>>();
     int _numOfEdges;
@@ -22,7 +23,8 @@ public class WGraph_DS implements weighted_graph {
         Collection<node_info> other_v = other.getV();
         for(node_info node : other_v){
             int node_key = node.getKey();
-            _vertices.put(node_key, node);
+            node_info curr = new NodeInfo(node_key);
+            _vertices.put(node_key, curr);
             HashMap<Integer, Double> node_weights = new HashMap<Integer, Double>();
             Collection<node_info> node_ni = other.getV(node_key);
             for(node_info ni : node_ni){
@@ -73,12 +75,19 @@ public class WGraph_DS implements weighted_graph {
     // What to do if they are the same
     @Override
     public void connect(int node1, int node2, double w) {
-        if(node1!=node2 && w>=0) {
-            if (_vertices.containsKey(node1) && _vertices.containsKey(node2)) {
+        if(w>=0) {
+            if (hasEdge(node1, node2)) {
                 _weights.get(node1).put(node2, w);
                 _weights.get(node2).put(node1, w);
-                _numOfEdges++;
                 _mc++;
+            }
+            else if (node1 != node2) {
+                if (_vertices.containsKey(node1) && _vertices.containsKey(node2)) {
+                    _weights.get(node1).put(node2, w);
+                    _weights.get(node2).put(node1, w);
+                    _numOfEdges++;
+                    _mc++;
+                }
             }
         }
     }
@@ -152,7 +161,7 @@ public class WGraph_DS implements weighted_graph {
         return s;
     }
 
-    private class NodeInfo implements node_info{
+    private class NodeInfo implements node_info, Serializable{
         private String _info;
         private double _tag;
         private int _key;
