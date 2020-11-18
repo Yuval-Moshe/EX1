@@ -9,14 +9,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class WGraph_DS_Test {
     private static Random _rnd = null;
 
-
-//    public static weighted_graph graphCreator(int v, int e, int seed){
-//        weighted_graph wg = new WGraph_DS();
-//        _rnd = new Random(seed);
-//        for(int i=0;i<v;i++) {
-//            wg.addNode(n);
-//        }    }
-
     // Test Basic Functionalities //
     @Test
     public void test_0() {
@@ -36,6 +28,7 @@ class WGraph_DS_Test {
         assertFalse(WG.hasEdge(0, 1));
         //weight of 2 unconnected nodes should be -1 //
         assertEquals(WG.getEdge(0, 1), -1);
+        //Checking edge update on an already connected nodes//
         WG.addNode(2);
         WG.addNode(3);
         WG.connect(0, 2, 3.5);
@@ -47,6 +40,13 @@ class WGraph_DS_Test {
         assertEquals(WG.edgeSize(), 1);
         WG.connect(0, 0, 8);
         assertEquals(WG.edgeSize(), 1);
+        //Checking that removing a node that doesn't exists doesn't change any thing//
+        int mcPrev = WG.getMC();
+        double edgesPrev = WG.edgeSize();
+        node_info temp = WG.removeNode(35);
+        assertNull(temp);
+        assertEquals(mcPrev, WG.getMC());
+        assertEquals(edgesPrev, WG.edgeSize());
     }
 
     @Test
@@ -182,22 +182,40 @@ class WGraph_DS_Test {
         WGA.init(WG_3);
         assertEquals(WGA.shortestPathDist(0,0), 0);
 
-        //TEST 3.6//
-        weighted_graph WG_4 = new WGraph_DS();
-        for(int i=1; i<901; i++){
-            WG_4.addNode(i);
+        //Test 3.6 - Src and Dest are neighbors but the path between them is not the shortest//
+        weighted_graph WG_5 = new WGraph_DS();
+        WG_5.addNode(1);
+        WG_5.addNode(90);
+        WG_5.connect(1,90,91);
+        for(int i=2; i<90; i++){
+            WG_5.addNode(i);
         }
-        for(int i=1; i<900; i++){
-            WG_4.connect(i,i+1,1);
-            if(i<899)
-            WG_4.connect(i,i+2,2.0001);
+        for(int i=1; i<90; i++){
+            WG_5.connect(i,i+1,0.5);
+        }
+        WGA.init(WG_5);
+        shortestPath = WGA.shortestPath(1,90);
+        boolean flag = true;
+        for(int i=1;i<91;i++){
+            flag &= shortestPath.get(i-1).equals(WG_5.getNode(i));
+        }
+        assertTrue(flag);
+        //Test 3.8 - Src and Dest are neighbors and the path between them is the shortest//
+        for(int i=1; i<90; i++) {
+            WG_5.connect(i, i + 1, 2);
+        }
+        shortestPath = WGA.shortestPath(1,90);
+        flag = true;
+        assertEquals(shortestPath.size(),2);
+        flag &= shortestPath.get(0).equals(WG_5.getNode(1));
+        flag &= shortestPath.get(1).equals(WG_5.getNode(90));
+        assertTrue(flag);
+        assertEquals(WGA.shortestPathDist(1,90),91);
 
-        }
-        WGA.init(WG_4);
-        shortestPath = WGA.shortestPath(1, 900);
-        for(node_info node : shortestPath){
-            System.out.print(node.getKey()+", ");
-        }
+
+
+
+
 
 
     }
@@ -237,6 +255,13 @@ class WGraph_DS_Test {
             for(node_info ni : WG_2.getV()){
                 if(WG_2.hasEdge(node.getKey(), ni.getKey())){
                     flag &= WG_1.hasEdge(node.getKey(), ni.getKey());
+                }
+            }
+        }
+        for(node_info node : WG_1.getV()){
+            for(node_info ni : WG_1.getV()){
+                if(WG_1.hasEdge(node.getKey(), ni.getKey())){
+                    flag &= WG_2.hasEdge(node.getKey(), ni.getKey());
                 }
             }
         }

@@ -1,5 +1,6 @@
 package ex1;
 
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -229,34 +230,30 @@ public class WGraph_DS implements weighted_graph, Serializable {
 
     /** Equals function for graph comparison, checks if each node & edge in this graph are also in the compared graph
      * and vice versa
-     * @param WG_2 - the graph to compare to
+     * @param WG_2_obj - the graph formed as an object to compare to
      * @return True if the graphs are equals, False if not
      * **/
-    public boolean equals (weighted_graph WG_2){
-        boolean flag = true;
-        Collection<node_info> WG1_V = getV();
-        Collection<node_info> WG2_V = WG_2.getV();
-        for(node_info node1 : WG1_V){
-            flag &= (WG_2.getNode(node1.getKey())!=null);
-        }
-        for(node_info node2 : WG1_V){
-            flag &= (getNode(node2.getKey())!=null);
-        }
-        for(node_info node : WG_2.getV()){
-            for(node_info ni : WG_2.getV()){
-                if(WG_2.hasEdge(node.getKey(), ni.getKey())){
-                    flag &= hasEdge(node.getKey(), ni.getKey());
-                }
+    public boolean equals (Object WG_2_obj){
+        boolean flag = false;
+        if(WG_2_obj instanceof weighted_graph ) {
+            weighted_graph WG_2 = (weighted_graph) WG_2_obj;
+            if(edgeSize()!=WG_2.edgeSize() || nodeSize()!=WG_2.nodeSize()){
+                return false;
             }
-        }
-        for(node_info node : getV()){
-            for(node_info ni : getV()){
-                if(hasEdge(node.getKey(), ni.getKey())){
-                    flag &= WG_2.hasEdge(node.getKey(), ni.getKey());
+            flag = true;
+            Collection<node_info> WG1_V = getV();
+            Collection<node_info> WG2_V = WG_2.getV();
+            for (node_info node1 : WG1_V) {
+                flag &= (WG_2.getNode(node1.getKey()) != null);
+            }
+            for (node_info node : WG_2.getV()) {
+                for (node_info ni : WG_2.getV(node.getKey())) {
+                        flag &= hasEdge(node.getKey(), ni.getKey());
                 }
             }
         }
         return flag;
+
     }
 
     /** This class implements the node_info interface which represents node in an unweighted undirected graph with the following class variables:
