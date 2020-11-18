@@ -220,10 +220,6 @@ public class WGraph_Algo_Test {
             WGA_2.load(file_name);
             assertEquals(WGA_1.getGraph(), WGA_2.getGraph());
 
-            //Test 4.2/
-            weighted_graph WG_3 = WGA_2.copy();
-            WGA_2.load("WrongFileName");
-            assertEquals(WGA_2.getGraph(), WG_3);
 
 
         }
