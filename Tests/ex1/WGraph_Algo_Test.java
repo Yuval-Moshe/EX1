@@ -23,8 +23,6 @@ import static org.junit.jupiter.api.Assertions.*;
      *  - Test 3.7 - The src node and dest node are neighbors and the path between them is the shortest, Path -> 1->90
      *  load_save():
      *  - Test 4.1 - Saving a graph to a file and then loading him to another wag, the graph of both wga should be equals
-     *  - Test 4.2 - Trying to load graph from an incorrect file name, should throw exception & the graph shouldn't change.
-     *
      * **/
 
 public class WGraph_Algo_Test {
