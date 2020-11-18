@@ -3,7 +3,9 @@
 Implementation of a weighted, undirected graph with the following classes:
 
 ***NodeInfo*** - A private class in WGraph_DS that implements the **node_info** interface, which is the interface nodes of the weighted, undirected graph.
+
 ***WGraph_DS*** - Implementing the **weighted_graph** interface, which is the graph itselfs. 
+
 ***WGraph_Algo*** - Implementing the **weighted_graph_algorithms** interface, which allows performing algorithmic queries about a specific graph. 
 
 ---------------------------------------------------------
