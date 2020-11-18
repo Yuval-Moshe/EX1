@@ -66,7 +66,6 @@ public class WGraph_DS implements weighted_graph, Serializable {
      * @return  True if there is an edge between node1 and node2, False if there isn't.
      * **/
     @Override
-    //לבדוק בנוגע לאותו קוד
     public boolean hasEdge(int node1, int node2) {
         if(node1!=node2){
             if(_vertices.containsKey(node1) && _vertices.containsKey(node2)){
@@ -116,16 +115,15 @@ public class WGraph_DS implements weighted_graph, Serializable {
             if (hasEdge(node1, node2)) {
                 _weights.get(node1).put(node2, w);
                 _weights.get(node2).put(node1, w);
-                _mc++;
             }
             else if (node1 != node2) {
                 if (_vertices.containsKey(node1) && _vertices.containsKey(node2)) {
                     _weights.get(node1).put(node2, w);
                     _weights.get(node2).put(node1, w);
                     _numOfEdges++;
-                    _mc++;
                 }
             }
+            _mc++;
         }
     }
 

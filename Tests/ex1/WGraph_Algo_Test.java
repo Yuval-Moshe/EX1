@@ -4,36 +4,30 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
     /**
+     * Test class for WGraph_Algo.
      * List of all the test in this Test class:
      * basicAlgoFunction():
      *  - Test 1.1 - test init() and getGraph() functions, graph's should be equals
      *  - Test 1.2 - test the copy() function, the graph's should be equal
      * isConnected():
-     *  - TEST 2.1 - Tests a connected graph before node removal: True, after node removal: False
-     *  - TEST 2.2 - Empty graph & 1 node graph: True
+     *  - Test 2.1 - Tests a connected graph before node removal: True, after node removal: False
+     *  - Test 2.2 - Empty graph : True
+     *  - Test 2.3 - 1 node graph : True
      * shortestPath():
-     *  - TEST 3.1 - Path 0->2->3->4, pathDist = 6.00;
-     *  - TEST 3.2 - Path 0->4->2->3->10, pathDist = 6.00;
-     *  - TEST 3.3 - Path 0->6->10, pathDist = 7.00;
-     *  - TEST 3.4 - No Path, pathDist = -1.00;
-     *  - TEST 3.5 - 1 Node Graph, pathDist = 0.00;
+     *  - Test 3.1 - Path 0->2->3->4, pathDist = 6.00;
+     *  - Test 3.2 - Path 0->4->2->3->10, pathDist = 6.00;
+     *  - Test 3.3 - Path 0->6->10, pathDist = 7.00;
+     *  - Test 3.4 - No Path, pathDist = -1.00;
+     *  - Test 3.5 - 1 Node Graph, pathDist = 0.00;
      *  - Test 3.6 - The src node and dest node are neighbors but the path between them is not the shortest, Path -> 1->2->...->90
      *  - Test 3.7 - The src node and dest node are neighbors and the path between them is the shortest, Path -> 1->90
+     *  load_save():
+     *  - Test 4.1 - Saving a graph to a file and then loading him to another wag, the graph of both wga should be equals
+     *  - Test 4.2 - Trying to load graph from an incorrect file name, should throw exception & the graph shouldn't change.
+     *
      * **/
 
 public class WGraph_Algo_Test {
-        private static int _numOfExceptions = 0;
-
-//        public static void main(String[] args) {
-//            long start = new Date().getTime();
-//            try {
-//                isConnected();
-//            } catch (Exception e) {
-//                _numOfExceptions++;
-//            }
-//
-//
-//        }
         @Test
         public void basicAlgoFunction(){
             //Test 1.1//
@@ -56,7 +50,7 @@ public class WGraph_Algo_Test {
         }
 
         @Test
-        public static void isConnected() {
+        public void isConnected() {
             weighted_graph WG_1 = new WGraph_DS();
             for (int i = 0; i < 10; i++) {
                 WG_1.addNode(i);
@@ -67,24 +61,26 @@ public class WGraph_Algo_Test {
                 WG_1.connect(i, i + 1, rnd_weight);
             }
 
-            //TEST 2.1//
+            //Test 2.1//
             weighted_graph_algorithms WGA = new WGraph_Algo();
             WGA.init(WG_1);
             assertTrue(WGA.isConnected());
             WGA.getGraph().removeNode(1);
             assertFalse(WGA.isConnected());
 
-            //TEST 2.2 - Empty graph & 1 node grpah: True//
+            //Test 2.2//
             weighted_graph WG_2 = new WGraph_DS();
             WGA.init(WG_2);
             assertTrue(WGA.isConnected());
+
+            //Test 2.3//
             WGA.getGraph().addNode(0);
             assertTrue(WGA.isConnected());
         }
 
         @Test
         public void shortestPath() {
-            //TEST 3.1//
+            //Test 3.1//
             weighted_graph WG_1 = new WGraph_DS();
             for (int i = 0; i < 5; i++) {
                 WG_1.addNode(i);
@@ -111,7 +107,7 @@ public class WGraph_Algo_Test {
             assertTrue(flag);
             assertEquals(WGA.shortestPathDist(0, 4), 6);
 
-            //TEST 3.2//
+            //Test 3.2//
             weighted_graph WG_2 = new WGraph_DS();
             for (int i = 0; i < 11; i++) {
                 WG_2.addNode(i);
@@ -148,7 +144,7 @@ public class WGraph_Algo_Test {
             assertTrue(flag);
             assertEquals(WGA.shortestPathDist(0, 10), 6);
 
-            //TEST 3.3//
+            //Test 3.3//
             WGA.getGraph().removeEdge(3, 10);
             shortestPath = WGA.shortestPath(0, 10);
             expected.clear();
@@ -162,7 +158,7 @@ public class WGraph_Algo_Test {
             assertTrue(flag);
             assertEquals(WGA.shortestPathDist(0, 10), 7);
 
-            //TEST 3.4//
+            //Test 3.4//
             WGA.getGraph().removeEdge(6, 10);
             WGA.getGraph().removeEdge(9, 10);
             shortestPath = WGA.shortestPath(0, 10);
@@ -170,7 +166,7 @@ public class WGraph_Algo_Test {
             assertEquals(WGA.shortestPathDist(0, 10), -1);
 
 
-            //TEST 3.5//
+            //Test 3.5//
             weighted_graph WG_3 = new WGraph_DS();
             WG_3.addNode(0);
             WGA.init(WG_3);
@@ -194,6 +190,7 @@ public class WGraph_Algo_Test {
                 flag &= shortestPath.get(i - 1).equals(WG_5.getNode(i));
             }
             assertTrue(flag);
+
             //Test 3.7//
             for (int i = 1; i < 90; i++) {
                 WG_5.connect(i, i + 1, 2);
@@ -209,6 +206,7 @@ public class WGraph_Algo_Test {
 
         @Test
         public void save_load() {
+            //Test 4.1//
             String file_name = "WGA_1_WGraph";
             weighted_graph WG_1 = new WGraph_DS();
             for (int i = 0; i < 10; i++) {
@@ -222,33 +220,14 @@ public class WGraph_Algo_Test {
             assertTrue(WGA_1.save(file_name));
             weighted_graph_algorithms WGA_2 = new WGraph_Algo();
             WGA_2.load(file_name);
-            assertTrue(isomorphic(WGA_1.getGraph(), WGA_2.getGraph()));
+            assertEquals(WGA_1.getGraph(), WGA_2.getGraph());
+
+            //Test 4.2/
+            weighted_graph WG_3 = WGA_2.copy();
+            WGA_2.load("WrongFileName");
+            assertEquals(WGA_2.getGraph(), WG_3);
+
+
         }
 
-        public static boolean isomorphic(weighted_graph WG_1, weighted_graph WG_2) {
-            boolean flag = true;
-            Collection<node_info> WG1_V = WG_1.getV();
-            Collection<node_info> WG2_V = WG_2.getV();
-            for (node_info node1 : WG1_V) {
-                flag &= (WG_2.getNode(node1.getKey()) != null);
-            }
-            for (node_info node2 : WG1_V) {
-                flag &= (WG_1.getNode(node2.getKey()) != null);
-            }
-            for (node_info node : WG_2.getV()) {
-                for (node_info ni : WG_2.getV()) {
-                    if (WG_2.hasEdge(node.getKey(), ni.getKey())) {
-                        flag &= WG_1.hasEdge(node.getKey(), ni.getKey());
-                    }
-                }
-            }
-            for (node_info node : WG_1.getV()) {
-                for (node_info ni : WG_1.getV()) {
-                    if (WG_1.hasEdge(node.getKey(), ni.getKey())) {
-                        flag &= WG_2.hasEdge(node.getKey(), ni.getKey());
-                    }
-                }
-            }
-            return flag;
-        }
     }
