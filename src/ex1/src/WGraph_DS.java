@@ -1,6 +1,5 @@
-package ex1;
+package ex1.src;
 
-import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
