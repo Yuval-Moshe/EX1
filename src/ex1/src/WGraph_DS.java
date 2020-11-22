@@ -18,10 +18,10 @@ import java.util.HashMap;
      * **/
 
 public class WGraph_DS implements weighted_graph, Serializable {
-    HashMap<Integer, node_info> _vertices = new HashMap<Integer, node_info>();
-    HashMap<Integer, HashMap<Integer, Double>> _weights = new HashMap<Integer, HashMap<Integer, Double>>();
-    int _numOfEdges;
-    int _mc;
+    private HashMap<Integer, node_info> _vertices = new HashMap<Integer, node_info>();
+    private HashMap<Integer, HashMap<Integer, Double>> _weights = new HashMap<Integer, HashMap<Integer, Double>>();
+    private int _numOfEdges;
+    private int _mc;
 
     /** Constructor **/
     public WGraph_DS(){

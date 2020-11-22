@@ -8,7 +8,7 @@ import java.util.*;
      *  **/
 
 public class WGraph_Algo implements weighted_graph_algorithms, Serializable {
-    weighted_graph _wg;
+    private weighted_graph _wg;
 
     /** Constructor **/
     public WGraph_Algo(){
